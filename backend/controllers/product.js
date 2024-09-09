@@ -11,6 +11,7 @@ module.exports = app => {
                 'products.name',
                 'products.price',
                 'products.stock',
+                'products.author',
                 'products.image_url'
             )
             .limit(limit).offset(page * limit - limit)

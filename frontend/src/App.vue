@@ -18,6 +18,17 @@ export default {
 </script>
 
 <style>
+:root {
+  --header-h: 100px;
+}
+
+* {
+  box-sizing: border-box;
+  font-size: 1;
+  font-weight: 100;
+  font-family: 'Times New Roman', Times, serif;
+}
+
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -32,10 +43,4 @@ html, body {
   background-color: #eee;
 }
 
-* {
-  box-sizing: border-box;
-  font-size: 1;
-  font-weight: 100;
-  font-family: monospace;
-}
 </style>
