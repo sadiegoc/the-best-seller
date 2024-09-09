@@ -119,7 +119,7 @@ header {
 }
 
 .menu {
-    background-color: #C96868;
+    background-color: var(--color-theme);
     width: 100%; height: 100%;
     padding: 0; margin: 0;
     
@@ -228,12 +228,13 @@ header {
 .dropdown {
     list-style: none;
     padding: 7px 12px; margin: 0;
+    z-index: 999;
 
     display: none; flex-direction: column;
     justify-content: center; align-items: center;
 
     width: max-content; position: absolute;
-    background-color: #C96868;
+    background-color: var(--color-theme);
 }
 
 .dropdown .dropdown-item {

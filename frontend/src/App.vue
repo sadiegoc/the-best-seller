@@ -20,6 +20,7 @@ export default {
 <style>
 :root {
   --header-h: 100px;
+  --color-theme: #C96868;
 }
 
 * {

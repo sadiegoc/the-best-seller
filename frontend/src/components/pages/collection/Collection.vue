@@ -1,12 +1,12 @@
 <template>
-    <section id="home">
-        home
+    <section id="collection">
+        collection
     </section>
 </template>
 
 <script>
 export default {
-    name: 'HomeView'
+    name: 'CollectionPage'
 }
 </script>
 
