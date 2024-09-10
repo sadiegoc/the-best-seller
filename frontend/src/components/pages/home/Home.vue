@@ -17,18 +17,31 @@
 <script>
 import Products from '@/components/layouts/Products.vue';
 import products from '@/services/products.service';
+import { bookCovers } from '../../../config/global';
 
 export default {
     name: 'HomeView',
     components: { Products },
     data: function () {
         return {
-            products: []
+            products: [],
+            page: this.$route.params.page || 1
         }
     },
     methods: {
         loadProducts () {
-            products.get(1).then(res => this.products = res.data)
+            products.get(this.page).then(res => {
+                this.products = res.data.map(product => {
+                    return {
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        stock: product.stock,
+                        author: product.author,
+                        image_url: bookCovers + product.image_url
+                    }
+                })
+            })
         }
     },
     mounted () {

@@ -100,6 +100,7 @@ header {
 }
 
 .control, .nav-control, .search, .brand {
+    margin: 0; padding: 0;
     display: flex; align-items: center;
 }
 

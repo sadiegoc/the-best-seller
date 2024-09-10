@@ -1,35 +1,25 @@
 <template>
     <section id="products">
-        <table>
-            <thead>
-                <tr>
-                    <th>id</th>
-                    <th>name</th>
-                    <th>price</th>
-                    <th>stock</th>
-                    <th>author</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="product in products" :key="product.id">
-                    <td>{{ product.id }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.price }}</td>
-                    <td>{{ product.stock }}</td>
-                    <td>{{ product.author }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <ProductCard
+            v-for="product in products"
+            :key="product.id"
+            :product="product">
+        </ProductCard>
     </section>
 </template>
 
 <script>
+import ProductCard from './ProductCard.vue'
 export default {
     name: 'ProductsLayout',
-    props: ['products']
+    props: ['products'],
+    components: { ProductCard }
 }
 </script>
 
 <style scoped>
-
+section#products {
+    display: grid; gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+}
 </style>
