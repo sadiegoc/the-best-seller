@@ -24,6 +24,16 @@ export default {
   --card-width: 200px;
 }
 
+@font-face {
+  font-family: roboto-regular;
+  src: url(./assets/fonts/Roboto-Regular.ttf);
+}
+
+@font-face {
+  font-family: roboto-thin;
+  src: url(./assets/fonts/Roboto-Thin.ttf);
+}
+
 * {
   box-sizing: border-box;
   font-size: 1;

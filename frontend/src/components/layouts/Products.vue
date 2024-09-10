@@ -19,7 +19,9 @@ export default {
 
 <style scoped>
 section#products {
+    width: 1200px;
     display: grid; gap: 10px;
     grid-template-columns: repeat(4, 1fr);
+    align-items: center; justify-items: center;
 }
 </style>

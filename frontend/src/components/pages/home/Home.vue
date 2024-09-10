@@ -7,6 +7,17 @@
                     Know the collection
                 </router-link>
             </div>
+            <div class="new-arrivals">
+                <h1>New Arrivals</h1>
+            </div>
+            <div class="categories">
+                <div class="buttons">
+                    <button class="active">All</button>
+                    <button>Adventure</button>
+                    <button>Romance</button>
+                    <button>Terror</button>
+                </div>
+            </div>
             <div class="products">
                 <Products :products="products"></Products>
             </div>
@@ -35,7 +46,7 @@ export default {
                     return {
                         id: product.id,
                         name: product.name,
-                        price: product.price,
+                        price: product.price.toString().replace('.', ','),
                         stock: product.stock,
                         author: product.author,
                         image_url: bookCovers + product.image_url
@@ -91,6 +102,33 @@ section#home {
     text-decoration: none;
     border: 2px solid var(--color-theme);
     padding: 10px;
+}
+
+.products {
+    margin: 50px auto;
+}
+
+.new-arrivals h1 {
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    font-weight: 100;
+    margin: 30px 0;
+    text-align: center;
+    border-bottom: 3px solid var(--color-theme);
+}
+
+.categories button {
+    border: none; background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 10px; margin: 0 5px;
+    cursor: pointer;
+    color: #000;
+    font-family: roboto-regular;
+}
+
+.categories button.active {
+    background-color: var(--color-theme);
+    color: white;
 }
 
 @media (max-width: 920px) {
