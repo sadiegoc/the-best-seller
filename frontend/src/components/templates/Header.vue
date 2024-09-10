@@ -50,20 +50,10 @@
                             <img src="@/assets/imgs/icons/down-arrow.png">
                         </a>
                         <ul class="dropdown">
-                            <li class="dropdown-item">
-                                <router-link>
-                                    Categoria 1
-                                </router-link>
-                            </li>
-                            <li class="dropdown-item">
-                                <router-link>
-                                    Categoria 2
-                                </router-link>
-                            </li>
-                            <li class="dropdown-item">
-                                <router-link>
-                                    Categoria 3
-                                </router-link>
+                            <li class="dropdown-item" v-for="c in categories" :key="c.id">
+                                <a href @click.prevent="selectCategory(c.id)">
+                                    {{ c.name }}
+                                </a>
                             </li>
                         </ul>
                     </li>
@@ -84,8 +74,22 @@
 </template>
 
 <script>
+import categories from '@/services/categories.service'
+import { mapState } from 'vuex';
 export default {
-    name: 'HeaderTemplate'
+    name: 'HeaderTemplate',
+    computed: mapState(['categories']),
+    methods: {
+        loadCategories () {
+            categories.get().then(res => this.$store.commit('setCategories', res.data)).catch(err => console.log(err))
+        },
+        selectCategory (cid) {
+            this.$router.push({ name: 'category', params: { cid: cid } })
+        }
+    },
+    mounted () {
+        this.loadCategories()
+    }
 }
 </script>
 
@@ -232,13 +236,14 @@ header {
     z-index: 999;
 
     display: none; flex-direction: column;
-    justify-content: center; align-items: center;
+    justify-content: center; align-items: start;
 
     width: max-content; position: absolute;
     background-color: var(--color-theme);
 }
 
 .dropdown .dropdown-item {
+    width: 100%;
     padding: 5px 0;
 }
 

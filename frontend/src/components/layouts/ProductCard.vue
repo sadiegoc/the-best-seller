@@ -5,7 +5,7 @@
         </div>
         <div class="card-body">
             <small>{{ product.author }}</small>
-            <router-link to="/product">
+            <router-link :to="{ name: 'product', params: { pid: product.id } }">
                 {{ product.name }}
             </router-link>
             <button @click.prevent="addToCart">Add to cart | R$ {{ product.price }}</button>
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import cart from '@/services/cart.service';
 import { mapState } from 'vuex';
 
 export default {
@@ -34,24 +35,29 @@ export default {
                 productToSave.amount = productInCart.amount + 1
 
                 const newCart = this.cart.map(p => {
-                    if (p.id === this.product.id) {
-                        return {
-                            id: p.id,
-                            name: p.name,
-                            price: p.price,
-                            image_url: p.image_url,
-                            amount: p.amount++
-                        }
-                    }
-
-                    return p
+                    if (p.id === this.product.id)
+                        return { ...p, amount: p.amount + 1 }
+                    return { ...p }
                 })
 
                 localStorage.setItem('cart', JSON.stringify(newCart))
+                this.$store.commit('setCart', newCart)
             } else {
                 productToSave.amount = 1
                 this.$store.state.cart.push(productToSave)
                 localStorage.setItem('cart', JSON.stringify(this.cart))
+            }
+
+            if (this.user) {
+                if (productInCart) {
+                    cart.edit(this.user.id, this.product.id, productToSave)
+                        .then(res => console.log(res.data))
+                        .catch(err => console.log(err))
+                } else {
+                    cart.save(this.user.id, productToSave)
+                        .then(res => console.log(res.data))
+                        .catch(err => console.log(err))
+                }
             }
         }
     }
@@ -69,6 +75,7 @@ export default {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+    border-radius: 5px;
 }
 
 .card-body * {

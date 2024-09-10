@@ -5,6 +5,9 @@ module.exports = app => {
     const get = async (req, res) => {
         const page = req.query.page || 1
 
+        const result = await app.db('products').count('id as count').first()
+        const count = result.count
+
         app.db('products')
             .select(
                 'products.id',
@@ -15,7 +18,7 @@ module.exports = app => {
                 'products.image_url'
             )
             .limit(limit).offset(page * limit - limit)
-            .then(products => res.status(200).json(products))
+            .then(products => res.status(200).json({ products: products, count, limit }))
             .catch(err => res.status(500).send(err))
     }
 
@@ -27,6 +30,33 @@ module.exports = app => {
             .select()
             .where({ id })
             .then(product => res.status(200).json(product))
+            .catch(err => res.status(500).send(err))
+    }
+
+    const getByCategory = async (req, res) => {
+        if (!req.params.cid) res.status(400).send('Category not given.')
+        const page = req.query.page || 1
+        const cid = req.params.cid
+
+        const result = await app.db('products')
+            .join('categories', 'products.category_id', '=', 'categories.id')
+            .where('categories.id', cid)
+            .count('products.id as count').first()
+        const count = result.count
+
+        await app.db('products')
+            .join('categories', 'products.category_id', '=', 'categories.id')
+            .select(
+                'products.id',
+                'products.name',
+                'products.price',
+                'products.stock',
+                'products.author',
+                'products.image_url'
+            )
+            .where('categories.id', cid)
+            .limit(limit).offset(page * limit - limit)
+            .then(products => res.status(200).json({ products: products, count, limit }))
             .catch(err => res.status(500).send(err))
     }
 
@@ -89,5 +119,5 @@ module.exports = app => {
         }
     }
 
-    return { get, getById, save, edit, remove }
+    return { get, getById, getByCategory, save, edit, remove }
 }

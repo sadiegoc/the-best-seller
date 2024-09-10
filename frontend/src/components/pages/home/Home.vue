@@ -12,14 +12,19 @@
             </div>
             <div class="categories">
                 <div class="buttons">
-                    <button class="active">All</button>
-                    <button>Adventure</button>
-                    <button>Romance</button>
-                    <button>Terror</button>
+                    <button :class="{ active: !currentCategory }" @click.prevent="loadProducts()">All</button>
+                    <button v-for="c in categories" :key="c.id" @click.prevent="loadProducts(1, c.id)" :class="{ active: currentCategory === c.id }">{{ c.name }}</button>
                 </div>
             </div>
             <div class="products">
                 <Products :products="products"></Products>
+            </div>
+            <div class="pages">
+                <div class="row">
+                    <button v-for="p in pages" :key="p" :class="{ 'active': p == currentPage }" @click.prevent="loadProducts(p, currentCategory)">
+                        {{ p }}
+                    </button>
+                </div>
             </div>
         </div>
     </section>
@@ -29,20 +34,35 @@
 import Products from '@/components/layouts/Products.vue';
 import products from '@/services/products.service';
 import { bookCovers } from '../../../config/global';
+import { mapState } from 'vuex';
 
 export default {
     name: 'HomeView',
+    computed: mapState(['categories']),
     components: { Products },
     data: function () {
         return {
             products: [],
-            page: this.$route.params.page || 1
+            count: 0,
+            limit: 0,
+            pages: 0,
+            currentPage: 0,
+            currentCategory: null
         }
     },
     methods: {
-        loadProducts () {
-            products.get(this.page).then(res => {
-                this.products = res.data.map(product => {
+        loadProducts (page = 1, cid = null) {
+            if (cid) {
+                this.currentCategory = cid
+                this.loadByCategory(page, cid)
+            } else {
+                this.currentCategory = null
+                this.loadAllProducts(page)
+            }
+        },
+        loadAllProducts (page = 1) {
+            products.get(page).then(res => {
+                this.products = res.data.products.map(product => {
                     return {
                         id: product.id,
                         name: product.name,
@@ -52,11 +72,35 @@ export default {
                         image_url: bookCovers + product.image_url
                     }
                 })
-            })
+    
+                this.definePages(res.data.count, res.data.limit, page)
+            }).catch(err => console.log(err))
+        },
+        loadByCategory (page = 1, cid) {
+            products.getByCategory(cid, page).then(res => {
+                this.products = res.data.products.map(product => {
+                    return {
+                        id: product.id,
+                        name: product.name,
+                        price: product.price.toString().replace('.', ','),
+                        stock: product.stock,
+                        author: product.author,
+                        image_url: bookCovers + product.image_url
+                    }
+                })
+
+                this.definePages(res.data.count, res.data.limit, page)
+            }).catch(err => console.log(err))
+        },
+        definePages (count, limit, page) {
+            this.count = count
+            this.limit = limit
+            this.pages = Math.ceil(this.count / this.limit)
+            this.currentPage = page
         }
     },
     mounted () {
-        this.loadProducts()
+        this.loadAllProducts()
     }
 }
 </script>
@@ -118,8 +162,8 @@ section#home {
 }
 
 .categories button {
-    border: none; background: #fff;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc; background: #fff;
+    border-radius: 5px;
     padding: 10px; margin: 0 5px;
     cursor: pointer;
     color: #000;
@@ -129,6 +173,31 @@ section#home {
 .categories button.active {
     background-color: var(--color-theme);
     color: white;
+    border-color: var(--color-theme);
+}
+
+.pages, .row {
+    display: flex; align-items: center;
+}
+
+.row button {
+    border: 1px solid #ccc; border-radius: 50%;
+    padding: 0; margin: 0 5px;
+    width: 30px; height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #fff;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.row button.active {
+    background-color: var(--color-theme);
+    color: white;
+    border-color: var(--color-theme);
 }
 
 @media (max-width: 920px) {

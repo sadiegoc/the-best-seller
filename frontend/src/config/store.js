@@ -4,7 +4,8 @@ import { userStorage } from "./global";
 export default createStore({
     state: {
         user: JSON.parse(localStorage.getItem(userStorage)) || null,
-        cart: JSON.parse(localStorage.getItem('cart')) || []
+        cart: JSON.parse(localStorage.getItem('cart')) || [],
+        categories: []
     },
     mutations: {
         setUser (state, user) {
@@ -12,6 +13,12 @@ export default createStore({
         },
         setCart (state, cart) {
             state.cart = cart
+        },
+        addToCart (state, product) {
+            state.cart.push(product)
+        },
+        setCategories (state, categories) {
+            state.categories = categories
         }
     }
 })
