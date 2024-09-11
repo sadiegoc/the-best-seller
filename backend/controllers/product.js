@@ -52,11 +52,42 @@ module.exports = app => {
                 'products.price',
                 'products.stock',
                 'products.author',
-                'products.image_url'
+                'products.image_url',
+                'categories.name as category'
             )
             .where('categories.id', cid)
             .limit(limit).offset(page * limit - limit)
-            .then(products => res.status(200).json({ products: products, count, limit }))
+            .then(products => res.status(200).json({ products, count, limit }))
+            .catch(err => res.status(500).send(err))
+    }
+
+    const getByCollection = async (req, res) => {
+        if (!req.params.cid) res.status(400).send('Collection not given.')
+        const page = req.query.page || 1
+        const cid = req.params.cid
+
+        const result = await app.db('products')
+            .join('collections_products', 'products.id', 'collections_products.product_id')
+            .join('collections', 'collections.id', 'collections_products.collection_id')
+            .where('collections.id', cid)
+            .count('products.id as count').first()
+        const count = result.count
+
+        await app.db('products')
+            .join('collections_products', 'products.id', 'collections_products.product_id')
+            .join('collections', 'collections.id', 'collections_products.collection_id')
+            .select(
+                'products.id',
+                'products.name',
+                'products.price',
+                'products.stock',
+                'products.author',
+                'products.image_url',
+                'collections.name as collection'
+            )
+            .where('collections.id', cid)
+            .limit(limit).offset(page * limit - limit)
+            .then(products => res.status(200).json({ products, count, limit }))
             .catch(err => res.status(500).send(err))
     }
 
@@ -119,5 +150,5 @@ module.exports = app => {
         }
     }
 
-    return { get, getById, getByCategory, save, edit, remove }
+    return { get, getById, getByCategory, save, edit, remove, getByCollection }
 }

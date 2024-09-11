@@ -50,7 +50,7 @@
                             Home
                         </router-link>
                     </li>
-                    <li class="nav-item nav-item-dropdown">
+                    <li class="nav-item nav-item-dropdown" v-if="categories.length > 0">
                         <a href="#">
                             Categories
                             <img src="@/assets/imgs/icons/down-arrow.png">
@@ -63,14 +63,14 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item nav-item-dropdown">
+                    <li class="nav-item nav-item-dropdown" v-if="collections.length > 0">
                         <a href="#">
                             Collections
                             <img src="@/assets/imgs/icons/down-arrow.png">
                         </a>
                         <ul class="dropdown">
-                            <li class="dropdown-item" v-for="c in categories" :key="c.id">
-                                <a href @click.prevent="selectCategory(c.id)">
+                            <li class="dropdown-item" v-for="c in collections" :key="c.id">
+                                <a href @click.prevent="selectCollection(c.id)">
                                     {{ c.name }}
                                 </a>
                             </li>
@@ -94,20 +94,28 @@
 
 <script>
 import categories from '@/services/categories.service'
+import collections from '@/services/collections.service';
 import { mapState } from 'vuex';
 export default {
     name: 'HeaderTemplate',
-    computed: mapState(['categories', 'showMenuSide']),
+    computed: mapState(['categories', 'collections', 'showMenuSide']),
     methods: {
         loadCategories () {
             categories.get().then(res => this.$store.commit('setCategories', res.data)).catch(err => console.log(err))
         },
         selectCategory (cid) {
             this.$router.push({ name: 'category', params: { cid: cid } })
+        },
+        loadCollections () {
+            collections.get().then(res => this.$store.commit('setCollections', res.data)).catch(err => console.log(err))
+        },
+        selectCollection (cid) {
+            this.$router.push({ name: 'collection', params: { cid: cid } })
         }
     },
     mounted () {
         this.loadCategories()
+        this.loadCollections()
     }
 }
 </script>
@@ -241,7 +249,8 @@ header {
 }
 
 .nav-menu a {
-    text-decoration: none; color: #151515;
+    color: white;
+    text-decoration: none;
     text-transform: uppercase;
     display: flex; align-items: center;
 }

@@ -12,6 +12,10 @@ class Product {
     getByCategory (cid, page = 1) {
         return http.get(`/product/category/${cid}?page=${page}`)
     }
+
+    getByCollection (cid, page = 1) {
+        return http.get(`/product/collection/${cid}?page=${page}`)
+    }
 }
 
 export default new Product()

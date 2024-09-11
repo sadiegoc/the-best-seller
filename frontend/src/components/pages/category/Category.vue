@@ -1,9 +1,14 @@
 <template>
     <section id="category">
+        <div class="title">
+            <h1>
+                {{ category }}
+            </h1>
+        </div>
         <div class="products">
             <Products :products="products"></Products>
         </div>
-        <div class="pages">
+        <div class="pages" v-if="pages > 1">
             <div class="row">
                 <button v-for="p in pages" :key="p" :class="{ 'active': p == currentPage }" @click.prevent="loadByCategory(p)">
                     {{ p }}
@@ -24,6 +29,7 @@ export default {
     data: function () {
         return {
             products: [],
+            category: "",
             count: 0,
             limit: 0,
             pages: 0,
@@ -36,15 +42,13 @@ export default {
                 products.getByCategory(this.categoryId, page).then(res => {
                     this.products = res.data.products.map(product => {
                         return {
-                            id: product.id,
-                            name: product.name,
+                            ...product,
                             price: product.price.toString().replace('.', ','),
-                            stock: product.stock,
-                            author: product.author,
                             image_url: bookCovers + product.image_url
                         }
                     })
 
+                    this.category = this.products[0].category
                     this.definePages(res.data.count, res.data.limit, page)
                 }).catch(err => console.log(err))
             }
@@ -77,8 +81,6 @@ section#category {
     display: flex; flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-
-    margin: 50px 0;
 }
 
 .pages, .row {
@@ -103,5 +105,11 @@ section#category {
     background-color: var(--color-theme);
     color: white;
     border-color: var(--color-theme);
+}
+
+.title h1 {
+    font-size: 1.6rem;
+    font-family: roboto-regular;
+    text-transform: uppercase;
 }
 </style>

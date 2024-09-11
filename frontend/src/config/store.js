@@ -6,6 +6,7 @@ export default createStore({
         user: JSON.parse(localStorage.getItem(userStorage)) || null,
         cart: JSON.parse(localStorage.getItem('cart')) || [],
         categories: [],
+        collections: [],
         showSideMenu: false
     },
     mutations: {
@@ -20,6 +21,9 @@ export default createStore({
         },
         setCategories (state, categories) {
             state.categories = categories
+        },
+        setCollections (state, collections) {
+            state.collections = collections
         }
     }
 })

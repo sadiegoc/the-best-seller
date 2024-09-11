@@ -22,4 +22,15 @@ module.exports = app => {
         .get(admin(app.controllers.category.getById))
         .patch(admin(app.controllers.category.edit))
         .delete(admin(app.controllers.category.remove))
+    
+    app.route('/admin/collections')
+        .all(app.middlewares.passport.authenticate())
+        .get(admin(app.controllers.collection.get))
+        .post(admin(app.controllers.collection.save))
+
+    app.route('/admin/collections/:cid')
+        .all(app.middlewares.passport.authenticate())
+        .get(admin(app.controllers.collection.getById))
+        .patch(admin(app.controllers.collection.edit))
+        .delete(admin(app.controllers.collection.remove))
 }

@@ -35,7 +35,7 @@ const routes = [
         name: 'category',
         component: () => import('@/components/pages/category/Category.vue')
     }, {
-        path: '/collection',
+        path: '/collection/:cid',
         name: 'collection',
         component: () => import('@/components/pages/collection/Collection.vue')
     }

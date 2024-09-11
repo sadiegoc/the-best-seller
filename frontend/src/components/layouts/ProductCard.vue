@@ -1,6 +1,6 @@
 <template>
     <article id="product">
-        <div class="card-head">
+        <div class="card-head" @click.prevent="selectProduct">
             <div class="image" :style="{ 'background-image': 'url(' + product.image_url + ')' }"></div>
         </div>
         <div class="card-body">
@@ -59,6 +59,9 @@ export default {
                         .catch(err => console.log(err))
                 }
             }
+        },
+        selectProduct () {
+            this.$router.push({ name: 'product', params: { pid: this.product.id } })
         }
     }
 }
@@ -68,6 +71,10 @@ export default {
 #product {
     width: var(--card-width); height: calc(4 * var(--card-width) / 2);
     display: flex; flex-direction: column;
+}
+
+.card-head {
+    cursor: pointer;
 }
 
 .image {

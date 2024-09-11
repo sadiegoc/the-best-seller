@@ -3,7 +3,7 @@
         <div class="container">
             <div class="image-start">
                 <h1>Stephen Hawking</h1>
-                <router-link to="/collection">
+                <router-link :to="{ name: 'collection', params: { cid: 3 } }">
                     Know the collection
                 </router-link>
             </div>
@@ -19,7 +19,7 @@
             <div class="products">
                 <Products :products="products"></Products>
             </div>
-            <div class="pages">
+            <div class="pages" v-if="pages > 1">
                 <div class="row">
                     <button v-for="p in pages" :key="p" :class="{ 'active': p == currentPage }" @click.prevent="loadProducts(p, currentCategory)">
                         {{ p }}
