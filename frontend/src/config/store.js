@@ -5,7 +5,8 @@ export default createStore({
     state: {
         user: JSON.parse(localStorage.getItem(userStorage)) || null,
         cart: JSON.parse(localStorage.getItem('cart')) || [],
-        categories: []
+        categories: [],
+        showSideMenu: false
     },
     mutations: {
         setUser (state, user) {

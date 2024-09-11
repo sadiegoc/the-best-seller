@@ -6,6 +6,9 @@
                     <router-link to="/home">
                         T.B.S.
                     </router-link>
+                    <button class="btn-menu" @click.prevent="this.$store.state.showMenuSide = true">
+                        <img src="@/assets/imgs/icons/menu.png" alt="Menu">
+                    </button>
                 </div>
                 <div class="search">
                     <form class="search-form">
@@ -36,8 +39,11 @@
                 </div>
             </div>
         </div>
-        <div class="menu">
+        <div class="menu" :class="{ show: showMenuSide }">
             <div class="container">
+                <button v-if="showMenuSide" class="btn-close" @click.prevent="this.$store.state.showMenuSide = false">
+                    <img src="@/assets/imgs/icons/close.png" alt="Close">
+                </button>
                 <ul class="nav-menu">
                     <li class="nav-item">
                         <router-link to="/home">
@@ -47,6 +53,19 @@
                     <li class="nav-item nav-item-dropdown">
                         <a href="#">
                             Categories
+                            <img src="@/assets/imgs/icons/down-arrow.png">
+                        </a>
+                        <ul class="dropdown">
+                            <li class="dropdown-item" v-for="c in categories" :key="c.id">
+                                <a href @click.prevent="selectCategory(c.id)">
+                                    {{ c.name }}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item nav-item-dropdown">
+                        <a href="#">
+                            Collections
                             <img src="@/assets/imgs/icons/down-arrow.png">
                         </a>
                         <ul class="dropdown">
@@ -78,7 +97,7 @@ import categories from '@/services/categories.service'
 import { mapState } from 'vuex';
 export default {
     name: 'HeaderTemplate',
-    computed: mapState(['categories']),
+    computed: mapState(['categories', 'showMenuSide']),
     methods: {
         loadCategories () {
             categories.get().then(res => this.$store.commit('setCategories', res.data)).catch(err => console.log(err))
@@ -106,6 +125,7 @@ header {
 .control, .nav-control, .search, .brand {
     margin: 0; padding: 0;
     display: flex; align-items: center;
+    justify-content: center;
 }
 
 .search-and-control {
@@ -137,6 +157,10 @@ header {
     width: 90%; height: calc(4 * var(--header-h) / 10);
     display: flex; flex-direction: row;
     align-items: center; justify-content: center;
+}
+
+.brand, .control {
+    width: 80px;
 }
 
 
@@ -212,8 +236,8 @@ header {
     list-style: none;
 }
 
-.nav-menu .nav-item:not(:first-child) {
-    margin-left: 10px;
+.nav-menu .nav-item {
+    margin: 0 10px;
 }
 
 .nav-menu a {
@@ -257,6 +281,64 @@ header {
 
 .nav-item-dropdown img {
     width: 24px;
+}
+
+.btn-close {
+    display: none;
+    border: none; background: transparent;
+    margin: 15px; padding: 0;
+    align-self: flex-end;
+}
+
+.btn-menu {
+    display: none;
+    border: none; background: transparent;
+}
+
+@media (max-width: 572px) {
+    header {
+        height: calc(6 * var(--header-h) / 10);
+    }
+
+    .search-and-control .container {
+        width: 100%;
+    }
+
+    .control {
+        margin: 0 10px;
+    }
+
+    .menu {
+        z-index: 999; position: absolute;
+        width: 300px; inset: 0;
+        
+        align-items: flex-start;
+        display: none;
+    }
+
+    .menu.show {
+        display: flex;
+    }
+
+    .menu .container {
+        width: 100%; height: 100%;
+        display: flex; flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .nav-menu {
+        width: 100%; height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-menu, .btn-close {
+        display: block;
+    }
+
+    .brand a {
+        display: none;
+    }
 }
 
 @media (max-width: 480px) {

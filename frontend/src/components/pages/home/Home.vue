@@ -161,6 +161,15 @@ section#home {
     border-bottom: 3px solid var(--color-theme);
 }
 
+.categories {
+    width: 100%;
+    display: flex; justify-content: center;
+}
+
+.categories .buttons {
+    text-align: center;
+}
+
 .categories button {
     border: 1px solid #ccc; background: #fff;
     border-radius: 5px;
