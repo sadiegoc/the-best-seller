@@ -21,8 +21,11 @@
                 <div class="control">
                     <ul class="nav-control">
                         <li class="nav-item">
-                            <router-link to="/auth">
-                                <img src="@/assets/imgs/icons/user.png" alt="Login / Register">
+                            <router-link to="/auth" v-if="!user">
+                                <img src="@/assets/imgs/icons/auth.png" alt="Login / Register">
+                            </router-link>
+                            <router-link to="/user" v-else>
+                                <img src="@/assets/imgs/icons/user.png" alt="User">
                             </router-link>
                         </li>
                         <li class="nav-item">
@@ -98,7 +101,7 @@ import collections from '@/services/collections.service';
 import { mapState } from 'vuex';
 export default {
     name: 'HeaderTemplate',
-    computed: mapState(['categories', 'collections', 'showMenuSide']),
+    computed: mapState(['user', 'categories', 'collections', 'showMenuSide']),
     methods: {
         loadCategories () {
             categories.get().then(res => this.$store.commit('setCategories', res.data)).catch(err => console.log(err))
