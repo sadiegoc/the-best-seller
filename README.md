@@ -1,4 +1,4 @@
-se<h1 align="center">The Best Seller</h1>
+<h1 align="center">The Best Seller</h1>
 The Best Seller é um projeto de e-commerce para a venda de livros. Este projeto está em desenvolvimento e tem como objetivo ser uma plataforma completa para a compra e venda de livros, com foco inicial na criação da interface de usuário para registro e login, autenticação, gerenciamento de carrinho de compras, favoritos e mais. A plataforma será futuramente aprimorada com a implementação de formas de pagamento.
 
 ## **Funcionalidades**
