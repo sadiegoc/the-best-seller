@@ -119,6 +119,7 @@ section#auth {
     
     background-color: #fff;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
 }
 
 .container h1 {
@@ -153,6 +154,7 @@ section#auth {
     padding: 10px 15px;
     outline: none;
     font-family: roboto-regular;
+    border-radius: 5px;
 }
 
 .form-checkbox {
