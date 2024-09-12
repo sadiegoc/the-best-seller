@@ -1,139 +1,152 @@
+const product = require("../models/product")
+
 module.exports = app => {
     const { existsOrError } = app.controllers.validation
     const limit = 8
 
     const get = async (req, res) => {
         const page = req.query.page || 1
+        const uid = req.query.uid || null
 
-        const result = await app.db('products').count('id as count').first()
-        const count = result.count
+        try {
+            const result = await app.db('products').count('id as count').first()
+            const count = result.count
 
-        app.db('products')
-            .select(
-                'products.id',
-                'products.name',
-                'products.price',
-                'products.stock',
-                'products.author',
-                'products.image_url'
-            )
-            .limit(limit).offset(page * limit - limit)
-            .then(products => res.status(200).json({ products: products, count, limit }))
-            .catch(err => res.status(500).send(err))
+            if (uid) {
+                const products = await product.getAllProductsFavorites(page, uid)
+                res.status(200).json({ products, count, limit })
+            } else {
+                const products = await product.getAllProducts(page)
+                res.status(200).json({ products, count, limit })
+            }
+
+        } catch (err) {
+            console.log(err)
+            res.status(500).send(err)
+        }
     }
 
     const getById = async (req, res) => {
         if (!req.params.pid) res.status(400).send('Product not given.')
         const id = req.params.pid
 
-        await app.db('products')
-            .select()
-            .where({ id })
-            .then(product => res.status(200).json(product))
-            .catch(err => res.status(500).send(err))
+        try {
+            const prod = await product.getById(id)
+            res.status(200).json(prod)
+        } catch (err) {
+            res.status(500).send(err)
+        }
     }
 
     const getByCategory = async (req, res) => {
         if (!req.params.cid) res.status(400).send('Category not given.')
         const page = req.query.page || 1
         const cid = req.params.cid
+        const uid = req.query.uid || null
 
-        const result = await app.db('products')
-            .join('categories', 'products.category_id', '=', 'categories.id')
-            .where('categories.id', cid)
-            .count('products.id as count').first()
-        const count = result.count
+        try {
+            const result = await app.db('products')
+                .join('categories', 'products.category_id', '=', 'categories.id')
+                .where('categories.id', cid)
+                .count('products.id as count').first()
+            const count = result.count
 
-        await app.db('products')
-            .join('categories', 'products.category_id', '=', 'categories.id')
-            .select(
-                'products.id',
-                'products.name',
-                'products.price',
-                'products.stock',
-                'products.author',
-                'products.image_url',
-                'categories.name as category'
-            )
-            .where('categories.id', cid)
-            .limit(limit).offset(page * limit - limit)
-            .then(products => res.status(200).json({ products, count, limit }))
-            .catch(err => res.status(500).send(err))
+            if (uid) {
+                const products = await product.getByCategoryFavorites(page, cid, uid)
+                res.status(200).json({ products, count, limit })
+            } else {
+                const products = await product.getByCategory(page, cid)
+                res.status(200).json({ products, count, limit })
+            }
+        } catch (err) {
+            res.status(500).send(err)
+        }
     }
 
     const getByCollection = async (req, res) => {
         if (!req.params.cid) res.status(400).send('Collection not given.')
         const page = req.query.page || 1
         const cid = req.params.cid
+        const uid = req.query.uid || null
 
-        const result = await app.db('products')
-            .join('collections_products', 'products.id', 'collections_products.product_id')
-            .join('collections', 'collections.id', 'collections_products.collection_id')
-            .where('collections.id', cid)
-            .count('products.id as count').first()
-        const count = result.count
+        try {
+            const result = await app.db('products')
+                .join('collections_products', 'products.id', 'collections_products.product_id')
+                .join('collections', 'collections.id', 'collections_products.collection_id')
+                .where('collections.id', cid)
+                .count('products.id as count').first()
+            const count = result.count
 
-        await app.db('products')
-            .join('collections_products', 'products.id', 'collections_products.product_id')
-            .join('collections', 'collections.id', 'collections_products.collection_id')
-            .select(
-                'products.id',
-                'products.name',
-                'products.price',
-                'products.stock',
-                'products.author',
-                'products.image_url',
-                'collections.name as collection'
-            )
-            .where('collections.id', cid)
-            .limit(limit).offset(page * limit - limit)
-            .then(products => res.status(200).json({ products, count, limit }))
-            .catch(err => res.status(500).send(err))
+            if (uid) {
+                const products = await product.getByCollectionFavorites(page, cid, uid)
+                res.status(200).json({ products, count, limit })
+            } else {
+                const products = await product.getByCollection(page, cid)
+                res.status(200).json({ products, count, limit })
+            }
+        } catch (err) {
+            res.status(500).send(err)
+        }
+
+    }
+
+    const getFavorites = async (req, res) => {
+        if (!req.params.uid) res.status(400).send('User not given.')
+        const uid = req.params.uid
+        const page = req.query.page || 1
+
+        try {
+            const result = await app.db('products')
+                .join('favorites', 'products.id', '=', 'favorites.pid')
+                .where('favorites.uid', uid)
+                .count('products.id as count').first()
+            const count = result.count
+
+            const products = await product.getAllFavorites(page, uid)
+            res.status(200).json({ products, count, limit })
+        } catch (err) {
+            res.status(500).send(err)
+        }
     }
 
     const save = async (req, res) => {
-        const product = { ...req.body }
+        const prod = { ...req.body }
 
         try {
-            existsOrError(product.name, 'Name not given.')
-            existsOrError(product.description, 'Description not given.')
-            existsOrError(product.author, 'Author not given.')
-            existsOrError(product.price, 'Price not given.')
-            existsOrError(product.stock, 'Stock not given.')
-            existsOrError(product.image_url, 'Image not given.')
-            existsOrError(product.category_id, 'Category not given.')
-        } catch (err) {
-            res.status(400).send(err)
-        }
+            existsOrError(prod.name, 'Name not given.')
+            existsOrError(prod.description, 'Description not given.')
+            existsOrError(prod.author, 'Author not given.')
+            existsOrError(prod.price, 'Price not given.')
+            existsOrError(prod.stock, 'Stock not given.')
+            existsOrError(prod.image_url, 'Image not given.')
+            existsOrError(prod.category_id, 'Category not given.')
 
-        app.db('products')
-            .insert(product)
-            .then(_ => res.status(204).send())
-            .catch(err => res.status(500).send(err))
+            await product.save(prod)
+            res.status(204).send()
+        } catch (err) {
+            res.status(500).send(err)
+        }
     }
 
     const edit = async (req, res) => {
         if (!req.params.pid) res.status(400).send('Product not given.')
         const id = req.params.pid
-        const product = { ...req.body }
+        const prod = { ...req.body }
 
         try {
-            existsOrError(product.name, 'Name not given.')
-            existsOrError(product.description, 'Description not given.')
-            existsOrError(product.author, 'Author not given.')
-            existsOrError(product.price, 'Price not given.')
-            existsOrError(product.stock, 'Stock not given.')
-            existsOrError(product.image_url, 'Image not given.')
-            existsOrError(product.category_id, 'Category not given.')
-        } catch (err) {
-            res.status(400).send(err)
-        }
+            existsOrError(prod.name, 'Name not given.')
+            existsOrError(prod.description, 'Description not given.')
+            existsOrError(prod.author, 'Author not given.')
+            existsOrError(prod.price, 'Price not given.')
+            existsOrError(prod.stock, 'Stock not given.')
+            existsOrError(prod.image_url, 'Image not given.')
+            existsOrError(prod.category_id, 'Category not given.')
 
-        app.db('products')
-            .update(product)
-            .where({ id })
-            .then(_ => res.status(204).send())
-            .catch(err => res.status(500).send(err))
+            await product.edit(prod, id)
+            res.status(204).send()
+        } catch (err) {
+            res.status(500).send(err)
+        }
     }
 
     const remove = async (req, res) => {
@@ -141,7 +154,7 @@ module.exports = app => {
         const id = req.params.pid
 
         try {
-            const rowsDeleted = await app.db('products').where({ id }).del()
+            const rowsDeleted = await product.remove(id)
             existsOrError(rowsDeleted, 'Product not found.')
 
             res.status(204).send()
@@ -150,5 +163,5 @@ module.exports = app => {
         }
     }
 
-    return { get, getById, getByCategory, save, edit, remove, getByCollection }
+    return { get, getById, getByCategory, save, edit, remove, getByCollection, getFavorites }
 }

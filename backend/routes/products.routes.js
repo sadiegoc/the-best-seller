@@ -10,4 +10,7 @@ module.exports = app => {
         
     app.route('/product/collection/:cid')
         .get(app.controllers.product.getByCollection)
+
+    app.route('/product/favorites/:uid')
+        .get(app.controllers.product.getFavorites)
 }

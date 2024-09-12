@@ -45,7 +45,7 @@ module.exports = app => {
     }
 
     const remove = async (req, res) => {
-        const favorite = { ...req.body }
+        const favorite = { ...req.query }
 
         try {
             existsOrError(favorite.uid, 'User not given.')

@@ -1,7 +1,8 @@
 <template>
     <article id="product">
-        <div class="card-head" @click.prevent="selectProduct">
-            <div class="image" :style="{ 'background-image': 'url(' + product.image_url + ')' }"></div>
+        <div class="card-head">
+            <div @click.prevent="selectProduct" class="image" :style="{ 'background-image': 'url(' + product.image_url + ')' }"></div>
+            <button class="favorite" :class="{ show: product.favorite }" v-if="user" @click.prevent="favorite"></button>
         </div>
         <div class="card-body">
             <small>{{ product.author }}</small>
@@ -15,6 +16,7 @@
 
 <script>
 import cart from '@/services/cart.service';
+import favorites from '@/services/favorites.service';
 import { mapState } from 'vuex';
 
 export default {
@@ -57,6 +59,19 @@ export default {
         },
         selectProduct () {
             this.$router.push({ name: 'product', params: { pid: this.product.id } })
+        },
+        favorite () {
+            if (this.user) {
+                if (this.product.favorite) {
+                    favorites.remove(this.user.id, this.product.id, this.user.token)
+                        .then(() => console.log('remove'))
+                        .catch(err => console.log(err))
+                } else {
+                    favorites.save(this.user.id, this.product.id, this.user.token)
+                        .then(() => console.log('ok'))
+                        .catch(err => console.log(err))
+                }
+            }
         }
     }
 }
@@ -69,15 +84,18 @@ export default {
 }
 
 .card-head {
-    cursor: pointer;
+    position: relative;
 }
 
 .image {
+    cursor: pointer;
     width: 100%; height: calc(3 * var(--card-width) / 2);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
     border-radius: 5px;
+
+    display: flex; justify-content: flex-end;
 }
 
 .card-body * {
@@ -123,5 +141,27 @@ button {
 
 button:hover {
     border-color: #000;
+}
+
+.favorite {
+    width: 40px; height: 40px;
+    background: rgba(255, 255, 255, 0.6);
+    border: none; margin: 5px;
+    
+    background-image: url(../../assets/imgs/icons/favorites.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 24px;
+
+    z-index: 999; position: absolute;
+    top: 0; right: 0; display: none;
+}
+
+.favorite:hover, .favorite.show {
+    background-image: url(../../assets/imgs/icons/heart.png);
+}
+
+.card-head:hover .favorite, .favorite.show {
+    display: block;
 }
 </style>

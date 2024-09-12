@@ -1,12 +1,68 @@
 <template>
     <section id="favorites">
-        favorites
+        <div class="title">
+            <h1>
+                Favorites
+            </h1>
+        </div>
+        <div class="products">
+            <Products :products="products"></Products>
+        </div>
+        <div class="pages" v-if="pages > 1">
+            <div class="row">
+                <button v-for="p in pages" :key="p" :class="{ 'active': p == currentPage }" @click.prevent="loadFavorites(p)">
+                    {{ p }}
+                </button>
+            </div>
+        </div>
     </section>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import Products from '@/components/layouts/Products.vue';
+import { bookCovers } from '@/config/global';
+import productsService from '@/services/products.service';
+
 export default {
-    name: 'FavoritesView'
+    name: 'FavoritesView',
+    components: { Products },
+    computed: mapState(['user']),
+    data: function () {
+        return {
+            products: [],
+            count: 0,
+            limit: 0,
+            pages: 0,
+            currentPage: 0
+        }
+    },
+    methods: {
+        loadFavorites (page = 1) {
+            productsService.getFavorites(this.user.id, page).then(res => {
+                console.log(res.data)
+                this.products = res.data.products.map(product => {
+                    return {
+                        ...product,
+                        favorite: true,
+                        image_url: bookCovers + product.image_url
+                    }
+                })
+
+                console.log(this.products)
+                this.definePages(res.data.count, res.data.limit, page)
+            }).catch(err => console.log(err))
+        },
+        definePages (count, limit, page) {
+            this.count = count
+            this.limit = limit
+            this.pages = Math.ceil(this.count / this.limit)
+            this.currentPage = page
+        }
+    },
+    mounted () {
+        this.loadFavorites(1)
+    }
 }
 </script>
 

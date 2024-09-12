@@ -50,7 +50,7 @@
                             <span>R$ 0,00</span>
                         </div>
                         <div class="total">
-                            <span>Total:</span>
+                            <span>Total :</span>
                             <span>
                                 R$ {{ subTotal.toFixed(2).toString().replace('.', ',') }}
                             </span>
@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import cart from '@/services/cart.service';
 import { mapState } from 'vuex';
 
 export default {
@@ -75,7 +76,7 @@ export default {
             subTotal: 0
         }
     },
-    computed: mapState(['cart']),
+    computed: mapState(['cart', 'user']),
     methods: {
         calculateSubTotal () {
             this.subTotal = 0
@@ -84,9 +85,11 @@ export default {
             });
         },
         minus (pid) {
+            let productToSave = {}
             const cartToSave = this.cart.map(product => {
                 if (product.id === pid && product.amount > 0) {
-                    return { ...product, amount: product.amount - 1 }
+                    productToSave = { ...product, amount: product.amount - 1 }
+                    return productToSave
                 }
 
                 return { ...product }
@@ -94,11 +97,18 @@ export default {
 
             this.updateCart(cartToSave)
             this.calculateSubTotal()
+            if (this.user) {
+                cart.edit(this.user.id, pid, productToSave)
+                    .then(resp => console.log(resp.data))
+                    .catch(err => console.log(err))
+            }
         },
         plus (pid) {
+            let productToSave = {}
             const cartToSave = this.cart.map(product => {
                 if (product.id === pid && product.amount < product.stock) {
-                    return { ...product, amount: product.amount + 1 }
+                    productToSave = { ...product, amount: product.amount + 1 }
+                    return productToSave
                 }
 
                 return { ...product }
@@ -106,11 +116,21 @@ export default {
 
             this.updateCart(cartToSave)
             this.calculateSubTotal()
+            if (this.user) {
+                cart.edit(this.user.id, pid, productToSave)
+                    .then(resp => console.log(resp.data))
+                    .catch(err => console.log(err))
+            }
         },
         remove (pid) {
             const cartToSave = this.cart.filter(product => product.id !== pid)
             this.updateCart(cartToSave)
             this.calculateSubTotal()
+            if (this.user) {
+                cart.remove(this.user.id, pid)
+                    .then(resp => console.log(resp.data))
+                    .catch(err => console.log(err))
+            }
         },
         updateCart (cartToSave) {
             this.$store.commit('setCart', cartToSave)
@@ -118,6 +138,11 @@ export default {
         }
     },
     mounted () {
+        if (this.user) {
+            cart.get(this.user.id)
+                .then(resp => this.$store.commit('setCart', resp.data))
+                .catch(err => console.log(err))
+        }
         this.calculateSubTotal()
     }
 }

@@ -68,7 +68,6 @@ export default {
                         image_url: bookCovers + product.image_url
                     }
                 })
-    
                 this.definePages(res.data.count, res.data.limit, page)
             }).catch(err => console.log(err))
         },
