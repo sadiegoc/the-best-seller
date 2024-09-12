@@ -43,7 +43,6 @@ export default {
                     this.products = res.data.products.map(product => {
                         return {
                             ...product,
-                            price: product.price.toString().replace('.', ','),
                             image_url: bookCovers + product.image_url
                         }
                     })

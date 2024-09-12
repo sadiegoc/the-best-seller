@@ -8,7 +8,7 @@
             <router-link :to="{ name: 'product', params: { pid: product.id } }">
                 {{ product.name }}
             </router-link>
-            <button @click.prevent="addToCart">Add to cart | R$ {{ product.price }}</button>
+            <button @click.prevent="addToCart">Add to cart | R$ {{ product.price.toString().replace('.', ',') }}</button>
         </div>
     </article>
 </template>
@@ -24,12 +24,7 @@ export default {
     methods: {
         addToCart () {
             const productInCart = this.cart.find(p => p.id === this.product.id)
-            const productToSave = {
-                id: this.product.id,
-                name: this.product.name,
-                price: this.product.price,
-                image_url: this.product.image_url
-            }
+            const productToSave = { ...this.product }
 
             if (productInCart) {
                 productToSave.amount = productInCart.amount + 1

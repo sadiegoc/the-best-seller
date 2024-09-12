@@ -64,11 +64,7 @@ export default {
             products.get(page).then(res => {
                 this.products = res.data.products.map(product => {
                     return {
-                        id: product.id,
-                        name: product.name,
-                        price: product.price.toString().replace('.', ','),
-                        stock: product.stock,
-                        author: product.author,
+                        ...product,
                         image_url: bookCovers + product.image_url
                     }
                 })
@@ -80,11 +76,7 @@ export default {
             products.getByCategory(cid, page).then(res => {
                 this.products = res.data.products.map(product => {
                     return {
-                        id: product.id,
-                        name: product.name,
-                        price: product.price.toString().replace('.', ','),
-                        stock: product.stock,
-                        author: product.author,
+                        ...product,
                         image_url: bookCovers + product.image_url
                     }
                 })
