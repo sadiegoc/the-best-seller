@@ -67,5 +67,39 @@ export default {
 </script>
 
 <style scoped>
+section#favorites {
+    display: flex; flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
 
+.pages, .row {
+    display: flex; align-items: center;
+}
+
+.row button {
+    border: 1px solid #ccc; border-radius: 50%;
+    padding: 0; margin: 0 5px;
+    width: 30px; height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #fff;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.row button.active {
+    background-color: var(--color-theme);
+    color: white;
+    border-color: var(--color-theme);
+}
+
+.title h1 {
+    font-size: 1.6rem;
+    font-family: roboto-regular;
+    text-transform: uppercase;
+}
 </style>

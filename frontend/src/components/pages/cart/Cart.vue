@@ -9,7 +9,9 @@
                             {{ p.author }}
                         </div>
                         <div class="name">
-                            {{ p.name }}
+                            <router-link :to="{ name: 'product', params: { pid: p.id } }">
+                                {{ p.name }}
+                            </router-link>
                         </div>
                         <div class="price">
                             R${{ p.price.toString().replace('.', ',') }}
@@ -188,9 +190,15 @@ section#cart {
     margin: 0 10px;
 }
 
-.data .name {
+.data .name a {
+    text-decoration: none;
+    color: #333;
     font-family: roboto-regular;
     font-size: 0.9rem;
+}
+
+.data .name a:hover {
+    text-decoration: underline;
 }
 
 .data .author {

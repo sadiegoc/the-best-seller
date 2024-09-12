@@ -2,7 +2,7 @@
     <article id="product">
         <div class="card-head">
             <div @click.prevent="selectProduct" class="image" :style="{ 'background-image': 'url(' + product.image_url + ')' }"></div>
-            <button class="favorite" :class="{ show: product.favorite }" v-if="user" @click.prevent="favorite"></button>
+            <button class="favorite" :class="{ show: fav }" v-if="user" @click.prevent="favorite"></button>
         </div>
         <div class="card-body">
             <small>{{ product.author }}</small>
@@ -22,6 +22,11 @@ import { mapState } from 'vuex';
 export default {
     name: 'ProductComponent',
     props: ['product'],
+    data: function () {
+        return {
+            fav: false
+        }
+    },
     computed: mapState(['user', 'cart']),
     methods: {
         addToCart () {
@@ -62,17 +67,20 @@ export default {
         },
         favorite () {
             if (this.user) {
-                if (this.product.favorite) {
+                if (this.fav) {
                     favorites.remove(this.user.id, this.product.id, this.user.token)
-                        .then(() => console.log('remove'))
+                        .then(() => this.fav = !this.fav)
                         .catch(err => console.log(err))
                 } else {
                     favorites.save(this.user.id, this.product.id, this.user.token)
-                        .then(() => console.log('ok'))
+                        .then(() => this.fav = !this.fav)
                         .catch(err => console.log(err))
                 }
             }
         }
+    },
+    mounted () {
+        this.fav = this.product.favorite
     }
 }
 </script>
@@ -153,7 +161,7 @@ button:hover {
     background-repeat: no-repeat;
     background-size: 24px;
 
-    z-index: 999; position: absolute;
+    z-index: 990; position: absolute;
     top: 0; right: 0; display: none;
 }
 
