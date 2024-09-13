@@ -119,6 +119,18 @@ module.exports = app => {
         return db('products').select().where({ id })
     }
 
+    const getByIdFavorite = async (id, uid) => {
+        return db('products')
+            .leftJoin('favorites', function() {
+                this.on('products.id', '=', 'favorites.pid')
+                    .andOn('favorites.uid', '=', db.raw('?', [uid]));
+            })
+            .leftJoin('categories', 'products.category_id', '=', 'categories.id')
+            .where('products.id', id)
+            .select('products.*', 'categories.name as category', db.raw('CASE WHEN favorites.pid IS NOT NULL THEN true ELSE false END AS favorite'))
+            .first()
+    }
+
     const save = async (product) => {
         return db('products').insert(product)
     }
@@ -140,6 +152,7 @@ module.exports = app => {
         getByCollectionFavorites,
         getAllFavorites,
         getById,
+        getByIdFavorite,
         save,
         edit,
         remove

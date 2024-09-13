@@ -29,11 +29,18 @@ module.exports = app => {
     const getById = async (req, res) => {
         if (!req.params.pid) res.status(400).send('Product not given.')
         const id = req.params.pid
+        const uid = req.query.uid || null
 
         try {
-            const prod = await product.getById(id)
-            res.status(200).json(prod)
+            if (uid) {
+                const prod = await product.getByIdFavorite(id, uid)
+                res.status(200).json(prod)
+            } else {
+                const prod = await product.getById(id)
+                res.status(200).json(prod)
+            }
         } catch (err) {
+            console.log(err)
             res.status(500).send(err)
         }
     }

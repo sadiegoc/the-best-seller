@@ -9,7 +9,7 @@ class Product {
 
     getById (pid) {
         const uid = store.state.user?.id || null
-        return http.get(`/product/${pid}&uid=${uid}`)
+        return http.get(`/product/${pid}?uid=${uid}`)
     }
 
     getByCategory (cid, page = 1) {
