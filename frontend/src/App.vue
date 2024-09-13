@@ -53,4 +53,8 @@ html, body {
   background-color: #eee;
 }
 
+button:active {
+    transform: scale(98%);
+}
+
 </style>

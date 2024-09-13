@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { userStorage } from "./global";
+import store from "./store";
 
 const routes = [
     {
@@ -56,6 +57,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const json = localStorage.getItem(userStorage)
+    store.state.showSideMenu = false
 
     if (to.matched.some(record => record.meta.requiresAuth === true)) {
         const user = JSON.parse(json)
@@ -66,6 +68,7 @@ router.beforeEach((to, from, next) => {
     } else {
         next()
     }
+
 })
 
 export default router

@@ -6,7 +6,7 @@
                     <router-link to="/home">
                         T.B.S.
                     </router-link>
-                    <button class="btn-menu" @click.prevent="this.$store.state.showMenuSide = true">
+                    <button class="btn-menu" @click.prevent="this.$store.state.showSideMenu = true">
                         <img src="@/assets/imgs/icons/menu.png" alt="Menu">
                     </button>
                 </div>
@@ -42,9 +42,9 @@
                 </div>
             </div>
         </div>
-        <div class="menu" :class="{ show: showMenuSide }">
+        <div class="menu" :class="{ show: showSideMenu }">
             <div class="container">
-                <button v-if="showMenuSide" class="btn-close" @click.prevent="this.$store.state.showMenuSide = false">
+                <button v-if="showSideMenu" class="btn-close" @click.prevent="this.$store.state.showSideMenu = false">
                     <img src="@/assets/imgs/icons/close.png" alt="Close">
                 </button>
                 <ul class="nav-menu">
@@ -54,7 +54,7 @@
                         </router-link>
                     </li>
                     <li class="nav-item nav-item-dropdown" v-if="categories.length > 0">
-                        <a href="#">
+                        <a>
                             Categories
                             <img src="@/assets/imgs/icons/down-arrow.png">
                         </a>
@@ -67,7 +67,7 @@
                         </ul>
                     </li>
                     <li class="nav-item nav-item-dropdown" v-if="collections.length > 0">
-                        <a href="#">
+                        <a>
                             Collections
                             <img src="@/assets/imgs/icons/down-arrow.png">
                         </a>
@@ -101,7 +101,7 @@ import collections from '@/services/collections.service';
 import { mapState } from 'vuex';
 export default {
     name: 'HeaderTemplate',
-    computed: mapState(['user', 'categories', 'collections', 'showMenuSide']),
+    computed: mapState(['user', 'categories', 'collections', 'showSideMenu']),
     methods: {
         loadCategories () {
             categories.get().then(res => this.$store.commit('setCategories', res.data)).catch(err => console.log(err))
@@ -322,7 +322,7 @@ header {
 
     .menu {
         z-index: 999; position: absolute;
-        width: 300px; inset: 0;
+        max-width: 300px; width: 100%; inset: 0;
         
         align-items: flex-start;
         display: none;
@@ -342,6 +342,10 @@ header {
         width: 100%; height: auto;
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .nav-menu .nav-item {
+        margin: 4px 10px;
     }
 
     .btn-menu, .btn-close {
