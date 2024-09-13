@@ -6,10 +6,10 @@ exports.seed = async function(knex) {
   // Deletes ALL existing entries
   await knex('collections').del()
   await knex('collections').insert([
-    { name: 'Harry Potter' },
-    { name: 'A Song of Ice and Fire' },
-    { name: 'Stephen Hawking' },
-    { name: 'The Lord of the Rings' },
-    { name: 'Sprawl Trilogy' }
+    { id: 1, name: 'Harry Potter' },
+    { id: 2, name: 'A Song of Ice and Fire' },
+    { id: 3, name: 'Stephen Hawking' },
+    { id: 4, name: 'The Lord of the Rings' },
+    { id: 5, name: 'Sprawl Trilogy' }
   ]);
 };
