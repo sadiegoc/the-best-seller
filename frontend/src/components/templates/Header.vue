@@ -11,11 +11,11 @@
                     </button>
                 </div>
                 <div class="search">
-                    <form class="search-form">
+                    <form class="search-form" @submit.prevent="search">
                         <button type="submit">
                             <img src="@/assets/imgs/icons/search.png" alt="Search">
                         </button>
-                        <input type="search" placeholder="Search..." v-model="search">
+                        <input type="search" placeholder="Search..." v-model="searchText">
                     </form>
                 </div>
                 <div class="control">
@@ -24,7 +24,7 @@
                             <router-link to="/auth" v-if="!user">
                                 <img src="@/assets/imgs/icons/auth.png" alt="Login / Register">
                             </router-link>
-                            <router-link to="/user" v-else>
+                            <router-link v-else>
                                 <img src="@/assets/imgs/icons/user.png" alt="User">
                             </router-link>
                         </li>
@@ -102,6 +102,11 @@ import { mapState } from 'vuex';
 export default {
     name: 'HeaderTemplate',
     computed: mapState(['user', 'categories', 'collections', 'showSideMenu']),
+    data: function () {
+        return {
+            searchText: ""
+        }
+    },
     methods: {
         loadCategories () {
             categories.get().then(res => this.$store.commit('setCategories', res.data)).catch(err => console.log(err))
@@ -114,6 +119,16 @@ export default {
         },
         selectCollection (cid) {
             this.$router.push({ name: 'collection', params: { cid: cid } })
+        },
+        search () {
+            if (this.searchText) {
+                this.$router.push({
+                    name: 'search',
+                    params: {
+                        search: this.searchText
+                    }
+                })
+            }
         }
     },
     mounted () {

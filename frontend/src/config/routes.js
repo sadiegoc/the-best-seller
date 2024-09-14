@@ -43,10 +43,9 @@ const routes = [
         name: 'collection',
         component: () => import('@/components/pages/collection/Collection.vue')
     }, {
-        path: '/user',
-        name: 'user',
-        component: () => import('@/components/pages/user/User.vue'),
-        meta: { requiresAuth: true }
+        path: '/search/:search',
+        name: 'search',
+        component: () => import('@/components/pages/search/Search.vue')
     }
 ]
 

@@ -170,5 +170,19 @@ module.exports = app => {
         }
     }
 
-    return { get, getById, getByCategory, save, edit, remove, getByCollection, getFavorites }
+    const search = async (req, res) => {
+        if (!req.body.search) res.status(400).send('Product not given.')
+        const search = req.body.search
+
+        try {
+            const result = await product.search(search)
+            console.log(result)
+            res.status(200).json(result)
+        } catch (err) {
+            return res.status(500).send(err)
+        }
+
+    }
+
+    return { get, getById, getByCategory, save, edit, remove, getByCollection, getFavorites, search }
 }

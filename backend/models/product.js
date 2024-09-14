@@ -143,6 +143,15 @@ module.exports = app => {
         return db('products').where({ id }).del()
     }
 
+    const search = async (search) => {
+        return db('products')
+            .where(builder => {
+                builder
+                .where('name', 'like', `%${search}%`)
+                .orWhere('author', 'like', `%${search}%`)
+            })
+    }
+
     module.exports = {
         getAllProducts,
         getAllProductsFavorites,
@@ -155,6 +164,7 @@ module.exports = app => {
         getByIdFavorite,
         save,
         edit,
-        remove
+        remove,
+        search
     }
 }

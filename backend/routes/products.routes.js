@@ -13,4 +13,7 @@ module.exports = app => {
 
     app.route('/product/favorites/:uid')
         .get(app.controllers.product.getFavorites)
+    
+    app.route('/product/search')
+        .post(app.controllers.product.search)
 }
