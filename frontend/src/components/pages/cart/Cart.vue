@@ -125,13 +125,17 @@ export default {
             }
         },
         remove (pid) {
-            const cartToSave = this.cart.filter(product => product.id !== pid)
-            this.updateCart(cartToSave)
-            this.calculateSubTotal()
             if (this.user) {
                 cart.remove(this.user.id, pid)
-                    .then(resp => console.log(resp.data))
+                    .then(res => {
+                        this.updateCart(res.data)
+                        this.calculateSubTotal()
+                    })
                     .catch(err => console.log(err))
+            } else {
+                const cartToSave = this.cart.filter(product => product.id !== pid)
+                this.updateCart(cartToSave)
+                this.calculateSubTotal()
             }
         },
         updateCart (cartToSave) {

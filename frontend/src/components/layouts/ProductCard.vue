@@ -32,33 +32,38 @@ export default {
         addToCart () {
             const productInCart = this.cart.find(p => p.id === this.product.id)
             const productToSave = { ...this.product }
-
-            if (productInCart) {
-                productToSave.amount = productInCart.amount + 1
-
-                const newCart = this.cart.map(p => {
-                    if (p.id === this.product.id)
-                        return { ...p, amount: p.amount + 1 }
-                    return { ...p }
-                })
-
-                localStorage.setItem('cart', JSON.stringify(newCart))
-                this.$store.commit('setCart', newCart)
-            } else {
-                productToSave.amount = 1
-                this.$store.state.cart.push(productToSave)
-                localStorage.setItem('cart', JSON.stringify(this.cart))
-            }
-
+            
             if (this.user) {
                 if (productInCart) {
+                    productToSave.amount = productInCart.amount + 1
                     cart.edit(this.user.id, this.product.id, productToSave)
-                        .then(res => console.log(res.data))
+                        .then(res => {
+                            localStorage.setItem('cart', JSON.stringify(res.data))
+                            this.$store.commit('setCart', res.data)
+                        })
                         .catch(err => console.log(err))
                 } else {
+                    productToSave.amount = 1
                     cart.save(this.user.id, productToSave)
-                        .then(res => console.log(res.data))
-                        .catch(err => console.log(err))
+                        .then(res => {
+                            localStorage.setItem('cart', JSON.stringify(res.data))
+                            this.$store.commit('setCart', res.data)
+                        })
+                }
+            } else {
+                if (productInCart) {
+                    const newCart = this.cart.map(prod => {
+                        if (prod.id === this.product.id)
+                            return { ...prod, amount: prod.amount + 1 }
+                        return { ...prod }
+                    })
+
+                    this.$store.commit('setCart', newCart)
+                    localStorage.setItem('cart', JSON.stringify(newCart))
+                } else {
+                    productToSave.amount = 1
+                    this.$store.state.cart.push(productToSave)
+                    localStorage.setItem('cart', JSON.stringify(this.cart))
                 }
             }
         },
