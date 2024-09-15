@@ -1,7 +1,7 @@
 <template>
     <section id="cart">
         <div class="container">
-            <div class="content">
+            <div class="content" v-if="cart.length > 0">
                 <div class="product" v-for="p in cart" :key="p.id">
                     <div class="image" :style="{ 'background-image': 'url(' + p.image_url + ')' }"></div>
                     <div class="data">
@@ -30,6 +30,9 @@
                         </button>
                     </div>
                 </div>
+            </div>
+            <div class="error" v-else>
+                <span>No items added yet!</span>
             </div>
             <div class="summary">
                 <div class="card">
@@ -171,6 +174,14 @@ section#cart {
     width: 100%; max-width: 600px;
     display: flex; flex-direction: column;
     justify-content: center; align-items: center;
+}
+
+.content, .error {
+    margin-right: 40px;
+}
+
+.summary {
+    margin-left: 40px;
 }
 
 .product {
@@ -343,14 +354,23 @@ button.checkout {
     margin-top: 10px;
 }
 
+.error span {
+    font-family: roboto-thin;
+    font-size: 2rem;
+}
+
 @media (max-width: 772px) {
     .container {
         flex-direction: column;
         align-items: center;
     }
 
+    .content, .error {
+        margin: 0;
+    }
+
     .summary {
-        margin: 10px auto;
+        margin: 50px auto;
     }
 }
 </style>

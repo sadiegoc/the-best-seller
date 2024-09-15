@@ -5,8 +5,11 @@
                 Favorites
             </h1>
         </div>
-        <div class="products">
+        <div class="products" v-if="products.length > 0">
             <Products :products="products"></Products>
+        </div>
+        <div class="error" v-else>
+            <span>No items added yet!</span>
         </div>
         <div class="pages" v-if="pages > 1">
             <div class="row">
@@ -101,5 +104,10 @@ section#favorites {
     font-size: 1.6rem;
     font-family: roboto-regular;
     text-transform: uppercase;
+}
+
+.error span {
+    font-family: roboto-thin;
+    font-size: 2rem;
 }
 </style>

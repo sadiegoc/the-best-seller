@@ -11,5 +11,7 @@ export default {
 </script>
 
 <style scoped>
-
+main {
+    min-height: calc(100vh - var(--header-h) - 250px);
+}
 </style>

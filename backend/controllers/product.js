@@ -176,7 +176,6 @@ module.exports = app => {
 
         try {
             const result = await product.search(search)
-            console.log(result)
             res.status(200).json(result)
         } catch (err) {
             return res.status(500).send(err)

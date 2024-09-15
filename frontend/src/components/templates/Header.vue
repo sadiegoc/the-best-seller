@@ -24,9 +24,16 @@
                             <router-link to="/auth" v-if="!user">
                                 <img src="@/assets/imgs/icons/auth.png" alt="Login / Register">
                             </router-link>
-                            <router-link v-else>
+                            <a href v-else>
                                 <img src="@/assets/imgs/icons/user.png" alt="User">
-                            </router-link>
+                            </a>
+                            <ul class="dropdown" v-if="user">
+                                <li class="dropdown-item">
+                                    <a href @click.prevent="logout">
+                                        Logout
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <router-link to="/favorites">
@@ -129,6 +136,10 @@ export default {
                     }
                 })
             }
+        },
+        logout () {
+            localStorage.clear()
+            this.$store.commit('setUser', null)
         }
     },
     mounted () {
@@ -302,7 +313,27 @@ header {
     border-bottom: 1px dashed #454545;
 }
 
+.control .nav-item .dropdown {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.control .nav-item .dropdown a {
+    color: #252525;
+    text-decoration: none;
+    font-family: roboto-regular;
+}
+
+.control .nav-item .dropdown a:hover {
+    text-decoration: underline;
+}
+
 .nav-item-dropdown:hover .dropdown {
+    display: flex;
+}
+
+.control .nav-item:hover .dropdown {
     display: flex;
 }
 
