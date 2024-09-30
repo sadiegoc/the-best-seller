@@ -167,14 +167,10 @@ button:hover {
     background-size: 24px;
 
     z-index: 990; position: absolute;
-    top: 0; right: 0; display: none;
+    top: 0; right: 0;
 }
 
 .favorite:hover, .favorite.show {
     background-image: url(../../assets/imgs/icons/heart.png);
-}
-
-.card-head:hover .favorite, .favorite.show {
-    display: block;
 }
 </style>
